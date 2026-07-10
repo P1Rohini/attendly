@@ -12,8 +12,8 @@ Built with Angular (standalone components, strict TypeScript) and Firebase
 > Fill this in after you create your two test accounts (see "Seed demo accounts" below),
 > then keep it here for the reviewer.
 
-- Employee: `employee@attendly.test` / `Password123!`
-- Manager: `manager@attendly.test` / `Password123!`
+- Employee: `rohini123@gmail.com` / `Rohini@123`
+- Manager: `gowthami123@gmail.com` / `Gowthami@123`
 
 ## How to use the app
 
