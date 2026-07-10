@@ -30,19 +30,44 @@ Built with Angular (standalone components, strict TypeScript) and Firebase
 ## Project structure
 
 ```
-src/app/
-  core/
-    models/        # AttendanceRecord, LeaveRequest, AppUser types
-    services/       # AuthService, AttendanceService, LeaveService (all Firestore/Auth I/O)
-    guards/         # authGuard (must be signed in), roleGuard (employee vs manager)
-  features/
-    login/                 # sign-in form
-    employee-dashboard/    # mark attendance, request leave, own dashboard
-    manager-dashboard/     # approve/reject leave, team dashboard, filters
-    home-redirect.component.ts  # sends a signed-in user to /employee or /manager
-firestore.rules            # security rules enforcing the role boundaries below
-firestore.indexes.json     # composite indexes the app's queries need
-firebase.json              # Hosting + Firestore deploy config
+attendly/
+├── src/
+│   ├── app/
+│   │   ├── core/
+│   │   │   ├── models/
+│   │   │   │   ├── app-user.model.ts        # AppUser, UserRole types
+│   │   │   │   ├── attendance.model.ts      # AttendanceRecord, AttendanceStatus
+│   │   │   │   └── leave.model.ts           # LeaveRequest, LeaveStatus
+│   │   │   ├── services/
+│   │   │   │   ├── auth.service.ts          # Firebase Auth + role lookup
+│   │   │   │   ├── attendance.service.ts    # Firestore CRUD for attendance
+│   │   │   │   └── leave.service.ts         # Firestore CRUD for leave
+│   │   │   └── guards/
+│   │   │       ├── auth.guard.ts            # must be signed in
+│   │   │       └── role.guard.ts            # employee vs manager routing
+│   │   ├── features/
+│   │   │   ├── login/                       # sign-in with employee/manager tabs
+│   │   │   ├── employee-dashboard/          # mark attendance, request leave
+│   │   │   ├── manager-dashboard/           # approve/reject, team filters
+│   │   │   └── home-redirect.component.ts   # role-based routing + error state
+│   │   ├── app.component.ts / .html          # topbar + router outlet
+│   │   ├── app.config.ts                     # Firebase/router providers
+│   │   └── app.routes.ts
+│   ├── environments/
+│   │   ├── environment.ts
+│   │   └── environment.prod.ts
+│   ├── index.html
+│   ├── main.ts
+│   └── styles.css
+├── firestore.rules              # role-based security rules
+├── firestore.indexes.json       # composite indexes for the app's queries
+├── firebase.json                # Hosting + Firestore deploy config
+├── .firebaserc                  # project alias (attendly-demo)
+├── angular.json
+├── package.json
+├── tsconfig.json / tsconfig.app.json
+├── .gitignore
+└── README.md
 ```
 
 Roles aren't stored in Firebase Auth (it doesn't have a native concept of roles) — they
