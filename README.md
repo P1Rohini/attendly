@@ -1,3 +1,8 @@
+**Live demo:** https://attendly-demo.web.app
+**Source:** https://github.com/P1Rohini/attendly
+
+---
+
 # AttendLy
 
 A small attendance and leave tracker. Employees sign in, mark daily attendance, and
