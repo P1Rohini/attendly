@@ -1,0 +1,73 @@
+<div class="container">
+  <div class="error" style="margin-bottom: 16px;" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <ng-container *ngIf="(attendance$ | async) as attendance">
+  <ng-container *ngIf="(leaveRequests$ | async) as leaveRequests">
+
+  <div class="card">
+    <h2>Team dashboard</h2>
+    <div class="row">
+      <div class="field">
+        <label>Month</label>
+        <input type="month" [(ngModel)]="monthFilter" />
+      </div>
+      <div class="field">
+        <label>Employee</label>
+        <select [(ngModel)]="employeeFilter">
+          <option value="">All employees</option>
+          <option *ngFor="let name of employeeNames(attendance)" [value]="name">{{ name }}</option>
+        </select>
+      </div>
+    </div>
+    <p>Present days (filtered): <strong>{{ presentCount(attendance) }}</strong></p>
+    <p>Pending leave requests (filtered): <strong>{{ pendingCount(leaveRequests) }}</strong></p>
+  </div>
+
+  <div class="card">
+    <h2>Leave requests</h2>
+    <table>
+      <thead>
+        <tr><th>Employee</th><th>From</th><th>To</th><th>Reason</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of filteredLeave(leaveRequests)">
+          <td>{{ r.employeeName }}</td>
+          <td>{{ r.from }}</td>
+          <td>{{ r.to }}</td>
+          <td>{{ r.reason }}</td>
+          <td><span class="badge" [ngClass]="r.status">{{ r.status }}</span></td>
+          <td>
+            <ng-container *ngIf="r.status === 'pending'">
+              <button class="btn" (click)="setStatus(r.id, 'approved')">Approve</button>
+              <button class="btn danger" style="margin-left: 6px;" (click)="setStatus(r.id, 'rejected')">Reject</button>
+            </ng-container>
+          </td>
+        </tr>
+        <tr *ngIf="filteredLeave(leaveRequests).length === 0">
+          <td colspan="6" class="muted">No leave requests match this filter.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Attendance records</h2>
+    <table>
+      <thead>
+        <tr><th>Employee</th><th>Date</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of filteredAttendance(attendance)">
+          <td>{{ r.employeeName }}</td>
+          <td>{{ r.date }}</td>
+          <td><span class="badge" [ngClass]="r.status">{{ r.status }}</span></td>
+        </tr>
+        <tr *ngIf="filteredAttendance(attendance).length === 0">
+          <td colspan="3" class="muted">No attendance records match this filter.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  </ng-container>
+  </ng-container>
+</div>

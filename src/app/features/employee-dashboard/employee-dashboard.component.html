@@ -1,0 +1,103 @@
+<div class="container" *ngIf="appUser$ | async as appUser">
+
+  <ng-container *ngIf="(attendance$ | async) as attendance">
+  <ng-container *ngIf="(leaveRequests$ | async) as leaveRequests">
+
+  <div class="card">
+    <h2>Dashboard</h2>
+    <div class="row">
+      <div class="field">
+        <label>Month</label>
+        <input type="month" [(ngModel)]="monthFilter" [ngModelOptions]="{standalone: true}" />
+      </div>
+    </div>
+    <p>Present days this month: <strong>{{ presentCount(attendance) }}</strong></p>
+    <p>Pending leave requests: <strong>{{ pendingLeaveCount(leaveRequests) }}</strong></p>
+  </div>
+
+  <div class="card">
+    <h2>{{ editingId ? 'Edit attendance' : 'Mark attendance' }}</h2>
+    <form [formGroup]="attendanceForm" (ngSubmit)="submitAttendance(appUser)">
+      <div class="row">
+        <div class="field">
+          <label for="att-date">Date</label>
+          <input id="att-date" type="date" formControlName="date" />
+        </div>
+        <div class="field">
+          <label for="att-status">Status</label>
+          <select id="att-status" formControlName="status">
+            <option value="present">Present</option>
+            <option value="absent">Absent</option>
+          </select>
+        </div>
+        <div class="field" style="flex: 0;">
+          <button class="btn" type="submit">{{ editingId ? 'Save' : 'Mark' }}</button>
+        </div>
+        <div class="field" style="flex: 0;" *ngIf="editingId">
+          <button class="btn secondary" type="button" (click)="cancelEdit()">Cancel</button>
+        </div>
+      </div>
+      <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    </form>
+
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of filteredAttendance(attendance)">
+          <td>{{ r.date }}</td>
+          <td><span class="badge" [ngClass]="r.status">{{ r.status }}</span></td>
+          <td>
+            <button class="btn secondary" (click)="editRecord(r)">Edit</button>
+            <button class="btn danger" style="margin-left: 6px;" (click)="deleteRecord(r.id)">Delete</button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredAttendance(attendance).length === 0">
+          <td colspan="3" class="muted">No attendance records for this month yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Request leave</h2>
+    <form [formGroup]="leaveForm" (ngSubmit)="submitLeave(appUser)">
+      <div class="row">
+        <div class="field">
+          <label for="lv-from">From</label>
+          <input id="lv-from" type="date" formControlName="from" />
+        </div>
+        <div class="field">
+          <label for="lv-to">To</label>
+          <input id="lv-to" type="date" formControlName="to" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="lv-reason">Reason</label>
+        <textarea id="lv-reason" formControlName="reason" rows="2"></textarea>
+      </div>
+      <button class="btn" type="submit">Submit request</button>
+    </form>
+
+    <table style="margin-top: 16px;">
+      <thead>
+        <tr><th>From</th><th>To</th><th>Reason</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of leaveRequests">
+          <td>{{ r.from }}</td>
+          <td>{{ r.to }}</td>
+          <td>{{ r.reason }}</td>
+          <td><span class="badge" [ngClass]="r.status">{{ r.status }}</span></td>
+        </tr>
+        <tr *ngIf="leaveRequests.length === 0">
+          <td colspan="4" class="muted">No leave requests yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  </ng-container>
+  </ng-container>
+</div>

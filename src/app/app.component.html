@@ -1,0 +1,9 @@
+<div class="topbar" *ngIf="appUser$ | async as appUser">
+  <strong>AttendLy</strong>
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <span class="badge leave">{{ appUser.displayName }} · {{ appUser.role }}</span>
+    <button class="btn secondary" (click)="signOut()">Sign out</button>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
